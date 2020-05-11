@@ -1,75 +1,30 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { Text, View } from "react-native";
 import * as Font from "expo-font";
-
-import Header from "./components/Header";
-import StartGameScreen from "./screens/StartGameScreen";
-import GameScreen from "./screens/GameScreen";
-import GameOverScreen from "./screens/GameOverScreen";
 import { AppLoading } from "expo";
+import { enableScreens } from "react-native-screens";
+import MealsNavigator from "./navigation/MealsNavigator";
+
+enableScreens();
 
 const fetchFonts = () => {
   return Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
-    "cursive-1": require("./assets/fonts/cursive.ttf"),
   });
 };
 
 export default function App() {
-  const [userNumber, setUserNumber] = useState();
-  const [guessRounds, setGuessRounds] = useState(0);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  if (!dataLoaded) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  // if font is not loaded ex(!fontLoaded) because inital state is falst ex(useState(false))
+  if (!fontLoaded) {
     return (
       <AppLoading
         startAsync={fetchFonts}
-        onFinish={() => setDataLoaded(true)}
-        onError={(err) => console.log(err)}
+        onFinish={() => setFontLoaded(true)}
       />
     );
   }
 
-  const configureNewGameHandler = () => {
-    setGuessRounds(0);
-    setUserNumber(null);
-  };
-
-  const startGameHandler = (selectedNumber) => {
-    setUserNumber(selectedNumber);
-  };
-
-  const gameOverHandler = (numOfRounds) => {
-    setGuessRounds(numOfRounds);
-  };
-
-  let content = <StartGameScreen onStartGame={startGameHandler} />;
-
-  if (userNumber && guessRounds <= 0) {
-    content = (
-      <GameScreen userChoice={userNumber} onGameOver={gameOverHandler} />
-    );
-  } else if (guessRounds > 0) {
-    content = (
-      <GameOverScreen
-        roundsNumber={guessRounds}
-        userNumber={userNumber}
-        onRestart={configureNewGameHandler}
-      />
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.screen}>
-      <Header title="Guess a Number" userChoice={userNumber} />
-      {content}
-    </SafeAreaView>
-  );
+  return <MealsNavigator />;
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-});
