@@ -1,10 +1,16 @@
 import React from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { MEALS } from "../data/dummy-data";
+import HeaderButton from "../components/HeaderButton";
 
-const MealDetailScren = (props) => {
+const MealDetailScreen = (props) => {
+  const mealId = props.navigation.getParam("mealId");
+
+  const selectedMeal = MEALS.find((meal) => meal.id === mealId);
   return (
     <View style={styles.screen}>
-      <Text>The Meal Detail Screen!</Text>
+      <Text>{selectedMeal.title}</Text>
       <Button
         title="Go Back to Categories"
         onPress={() => {
@@ -15,6 +21,25 @@ const MealDetailScren = (props) => {
   );
 };
 
+MealDetailScreen.navigationOptions = (navigationData) => {
+  const mealId = navigationData.navigation.getParam("mealId");
+  const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+  return {
+    title: selectedMeal.title,
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Favorite"
+          iconName="ios-star"
+          onPress={() => {
+            console.log("Mark as favorite!!!");
+          }}
+        />
+      </HeaderButtons>
+    ),
+  };
+};
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -23,4 +48,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MealDetailScren;
+export default MealDetailScreen;
